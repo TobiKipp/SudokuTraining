@@ -16,7 +16,7 @@ public class BaseController {
                 model.addAttribute("message", "Maven Web Project + Spring 3 MVC - welcome()");
  
                 //Spring uses InternalResourceViewResolver and return back index.jsp
-                return "index";
+                return "index-example";
  
         }
  
@@ -24,8 +24,14 @@ public class BaseController {
         public String welcomeName(@PathVariable("name") String name, ModelMap model) {
  
                 model.addAttribute("message", "Maven Web Project + Spring 3 MVC - " + name);
-                return "index";
+                return "index-example";
  
+        }
+
+
+        @RequestMapping(value="/")
+        public String home(ModelMap model){
+            return "index";
         }
  
 }
