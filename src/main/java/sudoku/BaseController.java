@@ -1,13 +1,13 @@
-package sudoku.controller;
+package sudoku;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PathVariable;
- 
+
 @Controller
-@RequestMapping("/")
+@RequestMapping("")
 public class BaseController {
  
         @RequestMapping(value="/welcome", method = RequestMethod.GET)
@@ -16,7 +16,7 @@ public class BaseController {
                 model.addAttribute("message", "Maven Web Project + Spring 3 MVC - welcome()");
  
                 //Spring uses InternalResourceViewResolver and return back index.jsp
-                return "index-example";
+                return "index-example.jsp";
  
         }
  
@@ -24,14 +24,15 @@ public class BaseController {
         public String welcomeName(@PathVariable("name") String name, ModelMap model) {
  
                 model.addAttribute("message", "Maven Web Project + Spring 3 MVC - " + name);
-                return "index-example";
+                return "index-example.jsp";
  
         }
 
 
-        @RequestMapping(value="/")
+        @RequestMapping(value="/", method = RequestMethod.GET)
         public String home(ModelMap model){
             return "index";
         }
+
  
 }
