@@ -62,4 +62,18 @@ equal to int 48. The other values are 0, as they are not defined by the config p
 What is not working is finding the templates. The first step is to use it the way it was provided in the example.
 The example used a simple HTML file instead of JSP. With an HTML it is working with JSP it is currently not working.
 
+After switching to spring boot following the maven war example of spring.io I got two controllers activated without
+using any XML configuration. The one thing missing is to use the index.jsp instead of index.html in the resolver. 
+For this a WebConfig.java is added containing a viewResolver method.
 
+After adding a application.properties with content
+
+`` 
+spring.view.prefix: /WEB-INF/templates/
+spring.view.suffix: .jsp
+server.port: 8081
+``
+
+and adding jstl to maven, the page was finally loaded.
+
+So it was majorly an issue with missing dependencies.
