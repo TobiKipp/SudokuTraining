@@ -2,6 +2,7 @@ package sudoku;
 
 import java.lang.Math;
 import java.lang.Character;
+import java.util.Arrays;
 
 /*
  * A 9x9 Sudoku field object.
@@ -10,7 +11,9 @@ public class Sudoku9{
 
     private int[][] field;
     
-
+    public Sudoku9(){
+    this.init("");
+    }
     /*
      * The configuration is a one-dimensional representation of the 9x9 field. 
      * A value of 0 represents an unsolved cell and 1 to 9 represents a solved cell.
@@ -43,11 +46,11 @@ public class Sudoku9{
            int y = xy[1];
            char value = config.charAt(i);
            if(Character.isDigit(value)){
-               this.field[y][x] = (int) value;
+               this.field[y][x] = Character.digit(value, 10);
            }
            else{
-               this.field[y][x] = 0;//TODO: Does int always initialize as 0? If remove the block.
-           }
+               this.field[y][x] = 0;
+           } 
        }
     }
 

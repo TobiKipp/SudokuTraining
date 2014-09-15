@@ -4,9 +4,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
+import org.springframework.web.client.RestTemplate;
+import sudoku.Sudoku9;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("")
@@ -41,7 +45,13 @@ public class BaseController {
         }
 
         @RequestMapping(value="/", method = RequestMethod.GET)
-        public String home(Map<String, Object> model){
+        public String home(ModelMap model, HttpServletRequest request, @RequestParam("config") String config ){
+            RestTemplate restTemplate = new RestTemplate();
+            String selfurl = request.getRequestURL().toString();
+            model.addAttribute("selfurl", selfurl);
+            Sudoku9 sudoku = restTemplate.getForObject(selfurl+"rest/sudoku9?config="+config, Sudoku9.class);
+            model.addAttribute("field", sudoku.getField());
+            model.addAttribute("config", config);
             return "index";
         }
 

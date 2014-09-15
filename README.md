@@ -75,3 +75,32 @@ After adding a application.properties with content:
 and adding jstl to maven, the page was finally loaded.
 
 So it was majorly an issue with missing dependencies.
+
+##Use the JSP to display the RESTFul WebService output##
+
+Now both components on their own are working it is time to use one in the other. The JSP will have to
+make a request and render the response into the HTML.
+
+Dervived from the [Consuming a RESTful Web Service](http://spring.io/guides/gs/consuming-rest/) example, I added
+the RestTemplate into the Controller:
+
+        @RequestMapping(value="/", method = RequestMethod.GET)
+        public String home(ModelMap model){
+            RestTemplate restTemplate = new RestTemplate();
+            Sudoku9 sudoku = restTemplate.getForObject("http://localhost:8080/Sudoku/rest/sudoku9", Sudoku9.class);
+            model.addAttribute("field", sudoku.getField());
+            return "index";
+        }
+
+It is very limited use in this case and the URL is not convincing yet. With it being the same app it there should
+be an easier way.
+
+By adding a HttpServletRequest to the method parameters the url can be reconstructed. 
+To test this I copied the war archive as Sudoku2.war. Now it returns  http://localhost:8080/Sudoku2/ as url.
+
+The spring boot jar does not seem to like the JSP too much, however on tomcat the app is running just fine.
+
+## Set the initial configuration ##
+
+The above method is very limited in use, as the configuration is fixed. To allow to change the configuration this 
+time the a request is added. 
