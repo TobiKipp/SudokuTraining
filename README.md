@@ -66,13 +66,11 @@ After switching to spring boot following the maven war example of spring.io I go
 using any XML configuration. The one thing missing is to use the index.jsp instead of index.html in the resolver. 
 For this a WebConfig.java is added containing a viewResolver method.
 
-After adding a application.properties with content
+After adding a application.properties with content:
 
-`` 
-spring.view.prefix: /WEB-INF/templates/
-spring.view.suffix: .jsp
-server.port: 8081
-``
+    spring.view.prefix: /WEB-INF/templates/
+    spring.view.suffix: .jsp
+    server.port: 8081
 
 and adding jstl to maven, the page was finally loaded.
 
