@@ -4,25 +4,16 @@
 <%@ page import="java.io.InputStream"%>
 <%@ page import="org.apache.commons.io.IOUtils"%>
 <html>
+    <head>
+        <link rel="stylesheet" href="<c:url value="/resources/css/sudoku.css"/>">
+    </head>
     <body>
-    <%
-        String thisurl = (String)request.getAttribute("selfurl"); 
-        String sudoku9url = thisurl + "rest/sudoku9";
-        out.println(sudoku9url);
-        URL url = new URL(sudoku9url);
-        URLConnection connection = url.openConnection();
-        InputStream sudoku9Stream = connection.getInputStream();
-        String sudoku9data = IOUtils.toString(sudoku9Stream, "UTF-8");
-        out.println(sudoku9data);
-    %>
-        Hello, world!
-    <%
-      // beliebiger Java-Code
-      out.println( "Hello from java!" );
-    %>
+
     <c:forEach begin="0" end="8" var="y">
         <c:forEach begin="0" end="8" var="x">
-            <c:out value="${field[y][x]}" />
+            <div class="test">
+                <c:out value="${field[y][x]}" />
+            </div>
         </c:forEach>
     </c:forEach>
     <c:out value="${selfurl}" />
@@ -30,10 +21,6 @@
     <c:import var="data" url="${selfurl}rest/sudoku9"/>
     <c:out value="${data}"/>
 
-    <c:set var="anurl" value="${selfurl}"/>
-    <%
-        String selfurl = (String)pageContext.getAttribute("anurl");
-        out.println(selfurl);
-    %>
+   
     </body>
 </html>

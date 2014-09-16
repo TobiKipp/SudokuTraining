@@ -145,3 +145,14 @@ the apache commons in maven.
     %>
 
 The backup needed some modifications, as it has to truncate the path and add the rest path after that. 
+
+## The basic Layout 1 - Getting CSS to work ##
+
+As a first step a 9x9 layout, a check and a solve button will be added. 
+The app does not know how to find the stylesheets. Finding examples using xml configuration is easier and now
+that I am forced to use a war archive anyhow due to bad spring boot JSP support I will use the web.xml again.
+
+The web.xml worked basically immediately. However the missing jackson libraries caused trouble with the 
+RESTful service leading to the index page using this service also malfunctioning. 
+
+
