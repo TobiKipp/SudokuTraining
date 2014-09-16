@@ -103,4 +103,45 @@ The spring boot jar does not seem to like the JSP too much, however on tomcat th
 ## Set the initial configuration ##
 
 The above method is very limited in use, as the configuration is fixed. To allow to change the configuration this 
-time the a request is added. 
+time the a request parameter is added. It defaults to a configuration for a completely empty field.
+
+## Request to the RESTful Service from JSP with JSTL ##
+
+After some trying to use JSP scriptlets I found an alternative solution to make the call to the RESTful service:
+
+    <c:import var="data" url="${selfurl}rest/sudoku9"/>
+    <c:out value="${data}"/>
+
+Still I want to solve it using plain JSP. For this I importet java.net.URL and apache commons. 
+As kind of mixed form jstl can be used to define the variable such that it is available in pageContext:
+
+    <c:set var="selfurl" value="${selfurl}"/>
+    <%
+        String selfurl = (String)pageContext.getAttribute("selfurl");
+        out.println(selfurl);
+    %>
+
+Without using JSTL it is almost the same but the request object is used:
+
+    <%
+        String anotherurl = (String)request.getAttribute("selfurl");
+        out.println(anotherurl);
+    %>
+
+Even if some lines could be saved in the following scriptlet The c:import jstl can not be beaten in terms of 
+shortness. I will backup the page to have an example for the alternative solutions, for this I will also keep
+the apache commons in maven. 
+
+
+    <%
+        String thisurl = (String)request.getAttribute("selfurl"); 
+        String sudoku9url = thisurl + "rest/sudoku9";
+        out.println(sudoku9url);
+        URL url = new URL(sudoku9url);
+        URLConnection connection = url.openConnection();
+        InputStream sudoku9Stream = connection.getInputStream();
+        String sudoku9data = IOUtils.toString(sudoku9Stream, "UTF-8");
+        out.println(sudoku9data);
+    %>
+
+The backup needed some modifications, as it has to truncate the path and add the rest path after that. 

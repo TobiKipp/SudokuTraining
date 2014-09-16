@@ -6,8 +6,7 @@
 <html>
     <body>
     <%
-        String thisurl = (String)request.getAttribute("selfurl"); 
-        String sudoku9url = thisurl + "rest/sudoku9";
+        String sudoku9url = (String)request.getAttribute("sudoku9Url"); 
         out.println(sudoku9url);
         URL url = new URL(sudoku9url);
         URLConnection connection = url.openConnection();
@@ -27,7 +26,7 @@
     </c:forEach>
     <c:out value="${selfurl}" />
     <c:out value="${config}" />
-    <c:import var="data" url="${selfurl}rest/sudoku9"/>
+    <c:import var="data" url="${sudoku9Url}"/>
     <c:out value="${data}"/>
 
     <c:set var="anurl" value="${selfurl}"/>

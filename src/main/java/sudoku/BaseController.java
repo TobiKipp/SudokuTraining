@@ -16,12 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("")
 public class BaseController {
  
+        /*
         @RequestMapping(value="/welcome", method = RequestMethod.GET)
         public String welcome(ModelMap model) {
  
                 model.addAttribute("message", "Maven Web Project + Spring 3 MVC - welcome()");
- 
-                //Spring uses InternalResourceViewResolver and return back index.jsp
                 return "index-example";
  
         }
@@ -33,6 +32,7 @@ public class BaseController {
                 return "index-example";
  
         }
+        */
         
         /*
          * Return any string representation example.
@@ -43,9 +43,30 @@ public class BaseController {
         public String hi(){
             return "Hello World";
         }
+        
+        //Access page with and without trailing slash
+        @RequestMapping(value = "/contentOfOtherPages", method = RequestMethod.GET)
+        public String contentOfOtherPages(ModelMap model, HttpServletRequest request,
+                @RequestParam(value = "config", defaultValue = "0" ) String config ){
+            RestTemplate restTemplate = new RestTemplate();
+            String selfurl = request.getRequestURL().toString();
+            //The selfurl contains contentOfOtherPages, which has to be removed
+            model.addAttribute("selfurl", selfurl);
+            String rootUrl =  selfurl.substring(0, selfurl.length() - "contentOfOtherPages".length() - 1);
+            if (rootUrl.charAt(rootUrl.length() - 1) != '/'){ 
+                rootUrl = rootUrl + "/";
+            }
+            String sudoku9Url = rootUrl + "rest/sudoku9?config=" + config;
+            model.addAttribute("sudoku9Url", sudoku9Url);
+            Sudoku9 sudoku = restTemplate.getForObject(sudoku9Url, Sudoku9.class);
+            model.addAttribute("field", sudoku.getField());
+            model.addAttribute("config", config);
+            return "contentOfOtherPages";
+        }
 
         @RequestMapping(value="/", method = RequestMethod.GET)
-        public String home(ModelMap model, HttpServletRequest request, @RequestParam("config") String config ){
+        public String home(ModelMap model, HttpServletRequest request,
+                @RequestParam(value = "config", defaultValue = "0" ) String config ){
             RestTemplate restTemplate = new RestTemplate();
             String selfurl = request.getRequestURL().toString();
             model.addAttribute("selfurl", selfurl);
