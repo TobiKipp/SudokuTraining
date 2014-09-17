@@ -155,4 +155,28 @@ that I am forced to use a war archive anyhow due to bad spring boot JSP support 
 The web.xml worked basically immediately. However the missing jackson libraries caused trouble with the 
 RESTful service leading to the index page using this service also malfunctioning. 
 
+The mvc-dispatcher-servlet.xml has a line added:
+
+        <mvc:resources mapping="/resources/**" location="/resources/" />
+       
+This leads to the src directory src/main/webapp/resources/ being available as /resources/ for the JSP:
+
+        <link rel="stylesheet" href="<c:url value="/resources/css/sudoku.css"/>">
+
+## The basic Layout 2 - Using CSS and JSTL to arrange the text inputs to a sudoku field ##
+
+To ensure the rows stay rows a horizontal class is added. 
+To enforce vertical alignment I tricked a litte using a column-count of 1.
+While there is a n-th child selector in css, I decided to get more used to JSTL using the equivalent to if-then-else,
+with <c:choose>.
+
+One of the issues with my design is that the border continues to the right where no more sudoku cells are and 
+the left and top have no border using only the rule x or y mod 3 is 2. I will add a rule at top and at left, such
+that it will have a border as well. The choose construct immediatley paid of here.
+To remove the border at the left the width of the vertical div was limited to the width of 9 cells and 4 borders.
+
+The representation is not perfect considering the borders, however this is something that can be fixed once
+everything else is working fine. One way to solve this would be to half the border width and add the x or y mod 3
+is 0 rules. 
+
 

@@ -10,11 +10,33 @@
     <body>
 
     <c:forEach begin="0" end="8" var="y">
+        <c:choose>
+            <c:when test="${y%3 == 2}">
+                <div class="vertical field-vertical cell-ymod3is2">
+            </c:when>
+            <c:when test="${y == 0}">
+                <div class="vertical field-vertical cell-istop">
+            </c:when>
+            <c:otherwise>
+                <div class="vertical field-vertical">
+            </c:otherwise>
+        </c:choose>
         <c:forEach begin="0" end="8" var="x">
-            <div class="test">
-                <c:out value="${field[y][x]}" />
+            <c:choose>
+                <c:when test="${x%3 == 2}">
+                    <div class="horizontal cell-xmod3is2">
+                </c:when>
+                <c:when test="${x == 0}">
+                    <div class="horizontal cell-isleft">
+                </c:when>
+                <c:otherwise>
+                    <div class="horizontal">
+                </c:otherwise>
+            </c:choose>
+                <input type="text" class="sudokucell" value="<c:out value="${field[y][x]}"/>" maxlength="1">
             </div>
         </c:forEach>
+        </div>
     </c:forEach>
     <c:out value="${selfurl}" />
     <c:out value="${config}" />
