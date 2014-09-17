@@ -69,10 +69,8 @@ public class BaseController {
                 @RequestParam(value = "config", defaultValue = "0" ) String config ){
             RestTemplate restTemplate = new RestTemplate();
             String selfurl = request.getRequestURL().toString();
-            model.addAttribute("selfurl", selfurl);
             Sudoku9 sudoku = restTemplate.getForObject(selfurl+"rest/sudoku9?config="+config, Sudoku9.class);
             model.addAttribute("field", sudoku.getField());
-            model.addAttribute("config", config);
             return "index";
         }
 

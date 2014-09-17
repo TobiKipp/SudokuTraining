@@ -179,4 +179,39 @@ The representation is not perfect considering the borders, however this is somet
 everything else is working fine. One way to solve this would be to half the border width and add the x or y mod 3
 is 0 rules. 
 
+## Minor changes to the Sudoku9 class ##
 
+The 0 in the field was not really what I wanted. To be able to extend to a 16x16 field still using only 1 character
+using digits are not valid. I change the type to character using space as undefined in the class representation.
+With the limit of 1 character in the input the space would have to be removed, when directly using the json
+response to fill the values.
+
+After some testing and ending with a line 
+
+            <c:set var="space" value='${" ".charAt(0)}'/>
+
+only to get a space character in JSTL I decided to use String instead of char or int for the cell values, even
+if only one character is used. This allows to set an empty String for undefined making it much more straight forward
+in the JSTL code to insert the value to the field. In Python these were things one did not have to care about
+due to the duck typing. 
+
+### Changes to Layout ###
+
+I decided to add the DOCTYPE to the document and it totally broke the layout. This is due to some width being added
+to some elements. With the limited width set for the horizontal elements the next line was used. To remove the
+limit of width and remove the extra lines at the right handed side, which should not show up, I moved the 
+classes that draw the border into the input. The input borders look cut off, so I added a div with the classed 
+around the input. It now looks like before adding the DOCTYPE and has no more width limitation.
+
+             <div class="horizontal">
+                <div class="${xclass} ${yclass}">
+                    <input type="text" class="sudokucell " value="<c:out value="${field[y][x]}"/>" maxlength="1">
+                </div>
+            </div>
+
+I just tested the page in chromium and it totally fails at the column-count. So lets use an alternative for
+vertical style.
+
+Well it was so easy. I just had to use float:left with width:100% for it to work. In the Midori browser the 
+lines are perfectly centered, which means I should use a library to make it look the same across all browsers, but
+this is something for later. 

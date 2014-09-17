@@ -3,46 +3,48 @@
 <%@ page import="java.net.URLConnection"%>
 <%@ page import="java.io.InputStream"%>
 <%@ page import="org.apache.commons.io.IOUtils"%>
+<!DOCTYPE HTML>
 <html>
     <head>
         <link rel="stylesheet" href="<c:url value="/resources/css/sudoku.css"/>">
+        <title>Sudoku Solver - Spring JSP JSTL Training Project</Title>
     </head>
     <body>
-
+    <h1>Sudoku Solver</h1>
     <c:forEach begin="0" end="8" var="y">
         <c:choose>
             <c:when test="${y%3 == 2}">
-                <div class="vertical field-vertical cell-ymod3is2">
+                <div class="vertical">
+                <c:set var="yclass" value="cell-ymod3is2"/>
             </c:when>
             <c:when test="${y == 0}">
-                <div class="vertical field-vertical cell-istop">
+                <div class="vertical">
+                <c:set var="yclass" value="cell-istop"/>
             </c:when>
             <c:otherwise>
-                <div class="vertical field-vertical">
+                <div class="vertical">
+                <c:set var="yclass" value=""/>
             </c:otherwise>
         </c:choose>
         <c:forEach begin="0" end="8" var="x">
             <c:choose>
                 <c:when test="${x%3 == 2}">
-                    <div class="horizontal cell-xmod3is2">
+                    <c:set var="xclass" value="cell-xmod3is2"/>
                 </c:when>
                 <c:when test="${x == 0}">
-                    <div class="horizontal cell-isleft">
+                    <c:set var="xclass" value="cell-isleft"/>
                 </c:when>
                 <c:otherwise>
-                    <div class="horizontal">
+                    <c:set var="xclass" value=""/>
                 </c:otherwise>
             </c:choose>
-                <input type="text" class="sudokucell" value="<c:out value="${field[y][x]}"/>" maxlength="1">
+             <div class="horizontal">
+                <div class="${xclass} ${yclass}">
+                    <input type="text" class="sudokucell " value="<c:out value="${field[y][x]}"/>" maxlength="1">
+                </div>
             </div>
         </c:forEach>
         </div>
     </c:forEach>
-    <c:out value="${selfurl}" />
-    <c:out value="${config}" />
-    <c:import var="data" url="${selfurl}rest/sudoku9"/>
-    <c:out value="${data}"/>
-
-   
     </body>
 </html>

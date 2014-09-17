@@ -1,6 +1,13 @@
 .test{
 color:red;
 }
+html, body {
+  height: 100%;
+  width: 100%;
+  margin:0;
+  padding:0;
+  min-height: 100%; /* for firefox */
+}
 
 .horizontal{
     float:left;
@@ -9,13 +16,8 @@ color:red;
 }
 
 .vertical{
-   -webkit-column-count: 1; /* Chrome, Safari, Opera */
-   -moz-column-count: 1; /* Firefox */
-   column-count: 1;
-}
-
-.field-vertical{
-    width: 466px;/*The sum of 9 cell widths plus 4 border widths*/
+    float:left;
+    width:100%;
 }
 
 .cell-xmod3is2{
