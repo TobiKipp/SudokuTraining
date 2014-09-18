@@ -35,10 +35,10 @@ key "/".
 
 ##Adding RESTFul WebService Example##
 
-Goal: Add the JSON reponse example without loosing the displaying of the JSP.
+Goal: Add the JSON response example without loosing the displaying of the JSP.
 
 The first tutorial for spring is [RESTful Web Service](http://spring.io/guides/gs/rest-service/) and it
-is one of the things I want to integrate into my webapp. The gui creates a request receives the JSON 
+is one of the things I want to integrate into my webapp. The GUI creates a request receives the JSON 
 response and processes it into the JSP.
 
 I added a RESTful Web Service like in the example, but without the Application.java, as I am using the WAR
@@ -72,7 +72,7 @@ After adding a application.properties with content:
     spring.view.suffix: .jsp
     server.port: 8081
 
-and adding jstl to maven, the page was finally loaded.
+and adding JSTL to maven, the page was finally loaded.
 
 So it was majorly an issue with missing dependencies.
 
@@ -113,7 +113,7 @@ After some trying to use JSP scriptlets I found an alternative solution to make 
     <c:out value="${data}"/>
 
 Still I want to solve it using plain JSP. For this I importet java.net.URL and apache commons. 
-As kind of mixed form jstl can be used to define the variable such that it is available in pageContext:
+As kind of mixed form JSTL can be used to define the variable such that it is available in pageContext:
 
     <c:set var="selfurl" value="${selfurl}"/>
     <%
@@ -128,7 +128,7 @@ Without using JSTL it is almost the same but the request object is used:
         out.println(anotherurl);
     %>
 
-Even if some lines could be saved in the following scriptlet The c:import jstl can not be beaten in terms of 
+Even if some lines could be saved in the following scriptlet The c:import JSTL can not be beaten in terms of 
 shortness. I will backup the page to have an example for the alternative solutions, for this I will also keep
 the apache commons in maven. 
 
@@ -215,3 +215,25 @@ vertical style.
 Well it was so easy. I just had to use float:left with width:100% for it to work. In the Midori browser the 
 lines are perfectly centered, which means I should use a library to make it look the same across all browsers, but
 this is something for later. 
+
+## Adding tests ##
+
+As preparation I need to analyse the MVC relationship. The model is anything like the Sudoku9 class, which
+handles the data fed by the controller. In this projects case one of the controllers receives the get request
+with both optional parameters config and operation. The controller asks the model for the data. In this case this 
+is the call of the RESTful service returning the field. The controller inserts the data into the JSP/JSTL
+servlet to render the view. This view is returned to the clients browser. As alternative the last action 
+could be seen as the server controller sending to the clients browser controller, which then leads to the 
+view.
+
+The JSP/JSTL is tested manually, as it is mostly about visual information. For most parts the controller
+is part of the framework and is assumed to be tested well. Anything done wrong by the controller should be
+found in the visual representation.
+
+This leaves the model to test. I will try to split up the tests, however I will not be too strict to test
+only one thing per test, if testing another thing fits at the time. As example the constructor tests 
+contain the test for the getField() method as well, due to having to access a private variable. 
+
+In addition to the, yet to implement, solving method, a method to return an url to recover the current state.
+It will turn any undefined field into a 0.
+

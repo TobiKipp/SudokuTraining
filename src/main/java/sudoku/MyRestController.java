@@ -11,8 +11,10 @@ public class MyRestController {
 
         @RequestMapping("/sudoku9")
         public Sudoku9 sudoku9( @RequestParam(value="config", required=false,
-                                              defaultValue ="123456789asdasdnm6sndjfnewrw0-*") String config){
-            return new Sudoku9(config=config);
+                                              defaultValue ="123456789asdasdnm6sndjfnewrw0-*") String config,
+                                @RequestParam(value="operation", defaultValue = "none") String operation
+                                             ){
+            return new Sudoku9(config = config, operation = operation);
         }
  
 }

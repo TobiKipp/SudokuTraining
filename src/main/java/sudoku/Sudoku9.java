@@ -55,11 +55,8 @@ public class Sudoku9{
        }
     }
 
-    public void solve(){
-        //TODO
-    }
 
-    private int[] indexToXY(int i){
+    protected int[] indexToXY(int i){
         int x = i%9;
         int y = i/9;
         return new int[] {x, y};
@@ -69,4 +66,25 @@ public class Sudoku9{
         return this.field;
     }
 
+
+    /*
+     * returns the cofiguration. Undefined values are returned as 0.
+     */
+    public String toConfig(){
+        String config = "";
+        for (int y = 0; y < 9; y++){
+            for(int x = 0; x < 9; x++){
+                String cellValue = this.field[y][x];
+                if (cellValue == ""){
+                    cellValue = "0";
+                }
+                config += cellValue;
+            }
+        }
+        return config;
+    }
+
+    public void solve(){
+        //TODO
+    }
 }

@@ -13,32 +13,25 @@
         <spring.version>4.1.0.RELEASE</spring.version>
         <jstl.version>1.2</jstl.version>
     </properties>
-    <!--
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>1.1.5.RELEASE</version>
-    </parent>
-    -->
 
     <dependencies>
-                <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-core</artifactId>
-                        <version>${spring.version}</version>
-                </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
-                <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                        <version>${spring.version}</version>
-                </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
-                <dependency>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-webmvc</artifactId>
-                        <version>${spring.version}</version>
-                </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -50,72 +43,51 @@
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-tomcat</artifactId>
-            <scope>provided</scope>
-        </dependency>
-    
-        <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-        <groupId>org.apache.tomcat.embed</groupId>
-        <artifactId>tomcat-embed-jasper</artifactId>
-        <scope>provided</scope>
-        </dependency>
-        <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-test</artifactId>
-        <scope>test</scope>
-        </dependency>
-        -->
+        
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
             <version>2.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.3.2</version>
+        </dependency>
 
-<dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-mapper-asl</artifactId>
-        <version>1.9.13</version>
-</dependency>
-<dependency>
-        <groupId>org.codehaus.jackson</groupId>
-        <artifactId>jackson-core-asl</artifactId>
-        <version>1.9.13</version>
-</dependency>
-<dependency>
-        <groupId>com.fasterxml.jackson.core</groupId>
-        <artifactId>jackson-databind</artifactId>
-        <version>2.1.0</version>
-</dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
-        <build>
-                <finalName>Sudoku</finalName>
-                <plugins>
-                        <plugin>
-                                <artifactId>maven-compiler-plugin</artifactId>
-                                <version>3.1</version>
-                        </plugin>
-                </plugins>
-        </build>
-    <!--
     <build>
+        <finalName>Sudoku</finalName>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
             </plugin>
         </plugins>
     </build>
-    -->
 
     <repositories>
         <repository>
