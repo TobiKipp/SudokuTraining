@@ -3,16 +3,18 @@ package sudoku;
 import java.lang.Math;
 import java.lang.Character;
 import java.util.Arrays;
+import sudoku.SudokuCell;
 
 /*
  * A 9x9 Sudoku field object.
  */
 public class Sudoku9{
 
-    private String[][] field;
+    private SudokuCell[][] field;
+    private static final String[] possibleValues = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
     
     public Sudoku9(){
-    this.init("");
+        this.init("");
     }
     /*
      * The configuration is a one-dimensional representation of the 9x9 field. 
@@ -30,7 +32,7 @@ public class Sudoku9{
     }
 
     public void init(String config){
-        this.field = new String[9][9];
+        this.field = new SudokuCell[9][9];
         this.loadConfig(config);
     
     }
@@ -51,7 +53,11 @@ public class Sudoku9{
                    cellValue += configValue;
                }
            }
-           this.field[y][x] = cellValue;
+           SudokuCell sudokuCell = new SudokuCell(this.possibleValues);
+           if (!cellValue.equals("")){
+               sudokuCell.setValue(cellValue);
+           }
+           this.field[y][x] = sudokuCell;
        }
     }
 
@@ -63,7 +69,13 @@ public class Sudoku9{
     }
 
     public String[][] getField(){
-        return this.field;
+        String[][] outfield = new String[9][9];
+        for (int y = 0; y < 9; y++){
+            for(int x = 0; x < 9; x++){
+                outfield[y][x] = this.field[y][x].toString();
+            }
+        }
+        return outfield;
     }
 
 
@@ -74,7 +86,7 @@ public class Sudoku9{
         String config = "";
         for (int y = 0; y < 9; y++){
             for(int x = 0; x < 9; x++){
-                String cellValue = this.field[y][x];
+                String cellValue = this.field[y][x].toString();
                 if (cellValue == ""){
                     cellValue = "0";
                 }

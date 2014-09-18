@@ -60,6 +60,7 @@ public class Sudoku9Test{
         //Load a longer than number of cells configuration.
         String longConfig = StringUtils.repeat("123456789",20);
         sudoku9.loadConfig(longConfig);
+        field = sudoku9.getField();
         assertEquals("1", field[0][0]);
         assertEquals("2", field[5][1]);
         assertEquals("7", field[3][6]);

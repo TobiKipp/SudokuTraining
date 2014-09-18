@@ -222,7 +222,7 @@ As preparation I need to analyse the MVC relationship. The model is anything lik
 handles the data fed by the controller. In this projects case one of the controllers receives the get request
 with both optional parameters config and operation. The controller asks the model for the data. In this case this 
 is the call of the RESTful service returning the field. The controller inserts the data into the JSP/JSTL
-servlet to render the view. This view is returned to the clients browser. As alternative the last action 
+to render the view. This view is returned to the clients browser. As alternative the last action 
 could be seen as the server controller sending to the clients browser controller, which then leads to the 
 view.
 
@@ -236,4 +236,33 @@ contain the test for the getField() method as well, due to having to access a pr
 
 In addition to the, yet to implement, solving method, a method to return an url to recover the current state.
 It will turn any undefined field into a 0.
+
+## Threaded solver ##
+
+I have two things in mind. The first is group based threads that know all known values and set them 
+to unavailable in all undefined cells of the group. The other is the use of cell threads, that check 
+if the cell has only one solution left and then sets it. 
+
+So how about a first implementation with these thoughts in mind? The cell needs to be altered for this.
+It is no longer a string, but a Sudokucell object with a toString method that returns the value if set 
+and empty string if unset. In addition it has a list of possible solutions.
+The group leader can tell its cells to remove impossible values.
+A list might be a very fragile component in a threaded environment. There are thread-safe list types like
+java.util.concurrent.ConcurrentLinkedQueue with methods add, remove and size. 
+
+For the SudokuCell class the value being the empty string is the equivalent to a not set flag.
+As soon as the cell is set the thread handling this cell may stop.
+The group leader threads may stop as soon as all cells are set. A timeout for unsolvable cases might 
+be used later on.
+
+The SudokuCell is now ready and tested, and the Sudoku9 class was updated to use it. Next are the two 
+thread classes for SudokuCell and SudokuGroup. It might not be the optimal solution with threads, however
+the point of doing it with threads is to train using threads in Java.
+
+The SudokuCellThreads rely on the SudokuGroupThreads to modify the cells possible values. The only task of 
+the SudokuCellThread is to call the update method in regular intervals and stop running when the value is set.
+A supervisor will notice when no more SudokuCellThread is running.
+
+
+
 
