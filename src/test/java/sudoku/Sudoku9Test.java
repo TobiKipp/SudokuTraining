@@ -46,6 +46,14 @@ public class Sudoku9Test{
     
     @Test
     public void testSolveConstructor(){
+        String config = "796003052002080137010050640000000085000591000560000000049010020378060900120400768";
+        
+        Sudoku9 sudoku9 = new Sudoku9(config, "solve");
+
+        String[][] field = sudoku9.getField();
+        assertEquals("6", field[6][0]);
+        String solution = "796143852452986137813752649931674285284591376567328491649817523378265914125439768";
+        assertEquals(solution, sudoku9.toConfig());
     }
 
     @Test 

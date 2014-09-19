@@ -7,9 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
-import java.util.Map;
 import org.springframework.web.client.RestTemplate;
-import sudoku.Sudoku9;
+import sudoku.SudokuRestTemplate;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -66,11 +65,14 @@ public class BaseController {
 
         @RequestMapping(value="/", method = RequestMethod.GET)
         public String home(ModelMap model, HttpServletRequest request,
-                @RequestParam(value = "config", defaultValue = "0" ) String config ){
+                @RequestParam(value = "config", defaultValue = "456" ) String config,
+                @RequestParam(value = "operation", defaultValue = "none") String operation){
             RestTemplate restTemplate = new RestTemplate();
             String selfurl = request.getRequestURL().toString();
-            Sudoku9 sudoku = restTemplate.getForObject(selfurl+"rest/sudoku9?config="+config, Sudoku9.class);
-            model.addAttribute("field", sudoku.getField());
+            String sudokuRestUrl = selfurl + "rest/sudoku9?config=" + config + "&operation=" + operation;
+            SudokuRestTemplate sudokuRT = restTemplate.getForObject(sudokuRestUrl, SudokuRestTemplate.class);
+            String[][] field =  sudokuRT.getField();
+            model.addAttribute("field", field);
             return "index";
         }
 

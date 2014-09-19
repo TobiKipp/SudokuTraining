@@ -263,6 +263,151 @@ The SudokuCellThreads rely on the SudokuGroupThreads to modify the cells possibl
 the SudokuCellThread is to call the update method in regular intervals and stop running when the value is set.
 A supervisor will notice when no more SudokuCellThread is running.
 
+### An error ###
+It seems that with the change from String to SudokuCell the JSP suddenly does something wrong. The call
+to the RESTful service is still fine, but the JSP leads to an, 
+"The request sent by the client was syntactically incorrect."
+
+The localization of the error shows that it has to do with the restTemplate. The following two lines lead 
+to the incorrect syntax.
+
+            String sudokuRestUrl = selfurl + "rest/sudoku9?config=" + config + "&operation=" + operation;
+            Sudoku9 sudoku = restTemplate.getForObject(sudokuRestUrl, Sudoku9.class);
+
+It can be solved by duplicating the values. With this the Sudoku9 has an array of SudokuCells and one of String, 
+which is totaly not to my liking.
+
+After some time it turned out, that it does not really need a duplication, however the code has issues with
+this.sudokuField\[y\]\[x\].toString(); always returning the default value of Sudokucell,
+which is the empty String in this case.
+
+    public String[][] getField(){
+        for (int y = 0; y < 9; y++){
+            for(int x = 0; x < 9; x++){
+                this.field[y][x] = this.sudokuField[y][x].toString();
+            }}
+        return this.field;
+    }
+
+Also it only affects the RestTemplate, as the rest service shows the data as it should be and the tests for the 
+class run with the above method.
+
+So lets get things clear once and for all. I added sudoku.loadConfig(config) to the controller - and after 
+some patience for it to correctly reload on tomcat - it works 
+with the above code. So which constructor is really used? It uses the parameterless constructor. So the 
+using the 2 parameter constructor message in the log was from another call.
+
+How to pass parameters with the RestTemplate?
+
+I think I got something majorly wrong. What is the purpose of the RestTemplate if I can create the 
+Object directly. The RestTemplate is of use if no such class is available and an JSON interpreter is of use.
+To make use of it I would need another class that only contains the String array with the field values.
 
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public class SudokuRestTemplate{
+    
+        private String[][] field;
+    
+        public String[][] getField(){
+            return field;
+        }
+    
+    }
+
+With this is all makes sense again. The RestTemplate fills this SudokuRestTemplate with the data form the 
+restful service and then the getField() result is fed into the model for JSP.
+I might add other variables later, but for now it only has field.
+
+### An easy example ###
+
+An easy sudoku has the configuration
+796003052002080137010050640000000085000591000560000000049010020378060900120400768
+
+It will be fed to the solver once it is finished.
+
+First the SudokuCellThreads that run until they know the value of their SudokuCell is set. They do this by calling
+update and isSet regularly.
+
+The supervisor just needs to ensure that all cell threads have finished for now. This just means that all threads
+have to call the join method.
+
+The SudokuCellThread alone would run forever, as it does nothing regarding removing possible values. 
+For a quick test the threads set the value to 6 if the value was not set. This also is displayed on the page.
+
+As next step the group threads are added. Their role is to remove possible values. To keep it simple in the first
+run all SudokuCells will have the possible values reduced. After that the set SudokuCells are known and do not
+need to be processed in the thread. In this case SudokuGroup relates to any set of SudokuCells in 
+block row and column.
+
+The grouping of row and colum is rather easy 0 to 8 in one dimension, the other is fixed.
+For groups it is a bit more complex with div and mod. After a quick sketch each block contains the elements 
+[0,1,2]x[0,1,2]. Each (0,0) has to be shifted according to the box top left cell. These are [0,3,6] x [0,3,6]
+
+Box Index i=0 top left cell is 0,0
+i%3 = 0
+i/3 = 0
+Box Index i=1 top left cell is 0,3
+i%3 = 1
+i/3 = 0
+Box Index i=8 top left cell is 6,6
+i%3 = 2
+i/3 = 2
+
+With this follows
+y = i/3\*2
+x = i%3\*2
+for the top left corner of the box with index i.
+
+For some reason the whole thing seems not to solve, even though tested with GNOME Sudoku and possible value hint
+activated. To find out what is missing I need a visualisation. For this another thread comes into play that displays
+the field on the console while testing.
+
+Okay the representation shows that no value is set in the progress. Lets see again what update does. 
+It did not help much, so how about looking at a field that must be solved by the rules like [6,0] which has to be 
+"6". The block is already full with exception to 5 and 6 and 5 is in the column. It says 2 or 8. It seems I got
+something wrong with the indices.
+
+That was some interesting debugging by printing all indices:
+
+    GROUP 0(0,0), (0,1), (0,2), (0,3), (0,4), (0,5), (0,6), (0,7), (0,8), 
+    GROUP 1(1,0), (1,1), (1,2), (1,3), (1,4), (1,5), (1,6), (1,7), (1,8), 
+    GROUP 2(2,0), (2,1), (2,2), (2,3), (2,4), (2,5), (2,6), (2,7), (2,8), 
+    GROUP 3(3,0), (3,1), (3,2), (3,3), (3,4), (3,5), (3,6), (3,7), (3,8), 
+    GROUP 4(4,0), (4,1), (4,2), (4,3), (4,4), (4,5), (4,6), (4,7), (4,8), 
+    GROUP 5(5,0), (5,1), (5,2), (5,3), (5,4), (5,5), (5,6), (5,7), (5,8), 
+    GROUP 6(6,0), (6,1), (6,2), (6,3), (6,4), (6,5), (6,6), (6,7), (6,8), 
+    GROUP 7(7,0), (7,1), (7,2), (7,3), (7,4), (7,5), (7,6), (7,7), (7,8), 
+    GROUP 8(8,0), (8,1), (8,2), (8,3), (8,4), (8,5), (8,6), (8,7), (8,8), 
+    GROUP 9(0,0), (1,0), (2,0), (3,0), (4,0), (5,0), (6,0), (7,0), (8,0), 
+    GROUP 10(0,1), (1,1), (2,1), (3,1), (4,1), (5,1), (6,1), (7,1), (8,1), 
+    GROUP 11(0,2), (1,2), (2,2), (3,2), (4,2), (5,2), (6,2), (7,2), (8,2), 
+    GROUP 12(0,3), (1,3), (2,3), (3,3), (4,3), (5,3), (6,3), (7,3), (8,3), 
+    GROUP 13(0,4), (1,4), (2,4), (3,4), (4,4), (5,4), (6,4), (7,4), (8,4), 
+    GROUP 14(0,5), (1,5), (2,5), (3,5), (4,5), (5,5), (6,5), (7,5), (8,5), 
+    GROUP 15(0,6), (1,6), (2,6), (3,6), (4,6), (5,6), (6,6), (7,6), (8,6), 
+    GROUP 16(0,7), (1,7), (2,7), (3,7), (4,7), (5,7), (6,7), (7,7), (8,7), 
+    GROUP 17(0,8), (1,8), (2,8), (3,8), (4,8), (5,8), (6,8), (7,8), (8,8), 
+    GROUP 18(0,0), (0,1), (0,2), (1,0), (1,1), (1,2), (2,0), (2,1), (2,2), 
+    GROUP 19(0,3), (0,4), (0,5), (1,3), (1,4), (1,5), (2,3), (2,4), (2,5), 
+    GROUP 20(0,6), (0,7), (0,8), (1,6), (1,7), (1,8), (2,6), (2,7), (2,8), 
+    GROUP 21(3,0), (3,1), (3,2), (4,0), (4,1), (4,2), (5,0), (5,1), (5,2), 
+    GROUP 22(3,3), (3,4), (3,5), (4,3), (4,4), (4,5), (5,3), (5,4), (5,5), 
+    GROUP 23(3,6), (3,7), (3,8), (4,6), (4,7), (4,8), (5,6), (5,7), (5,8), 
+    GROUP 24(6,0), (6,1), (6,2), (7,0), (7,1), (7,2), (8,0), (8,1), (8,2), 
+    GROUP 25(6,3), (6,4), (6,5), (7,3), (7,4), (7,5), (8,3), (8,4), (8,5), 
+    GROUP 26(6,6), (6,7), (6,8), (7,6), (7,7), (7,8), (8,6), (8,7), (8,8),
+
+Group 0-9 is rows
+Group 10-17 is colums
+Group 18 to 26 are blocks.
+
+It was one typo and one calculation (if I even calculated anything there) error. 
+The box x and y must be multiplied by 3 and not 2. 
+y = i/3\*3
+x = i%3\*3
+
+I noted that Box Index i=8 top left cell is 6,6
+x = i%3\*3 = 2\*3 = 6
+y = i/3\*3 = 2\*3 = 6 
 

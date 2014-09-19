@@ -46,8 +46,14 @@ class SudokuCell{
      * Check if only one possible value is left and set it in that case.
      */
     public void update(){
-        if (this.possibleValues.size() == 1){
+        //System.out.print("UPDATE" + this.value);
+        //for (Object val: this.possibleValues.toArray()){
+        //    System.out.print(val);
+        //}
+        //System.out.println("");
+        if (this.possibleValues.size() == 1 && this.value.equals("")){
             this.value = this.possibleValues.peek();
+
         }
     }
 
