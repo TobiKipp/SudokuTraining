@@ -101,8 +101,8 @@ public class Sudoku9{
     }
 
     public void solve(){
-        int timeoutCell = 20;
-        int timeoutGroup = 10;
+        int timeoutCell = 40;
+        int timeoutGroup = 20;
         ArrayList<Thread> allThreads = new ArrayList<Thread>();
         for (int i=0; i < 81; i++){
            int[] xy = indexToXY(i);

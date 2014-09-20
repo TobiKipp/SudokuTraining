@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 import sudoku.SudokuRestTemplate;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.Set;
+import java.lang.Integer;
 
 @Controller
 @RequestMapping("")
@@ -65,7 +68,7 @@ public class BaseController {
 
         @RequestMapping(value="/", method = RequestMethod.GET)
         public String home(ModelMap model, HttpServletRequest request,
-                @RequestParam(value = "config", defaultValue = "456" ) String config,
+                @RequestParam(value = "config", defaultValue = "0" ) String config,
                 @RequestParam(value = "operation", defaultValue = "none") String operation){
             RestTemplate restTemplate = new RestTemplate();
             String selfurl = request.getRequestURL().toString();
@@ -76,5 +79,47 @@ public class BaseController {
             return "index";
         }
 
+        @RequestMapping(value="/handle/sudoku9", params="store", method = RequestMethod.GET)
+        public String storeSudoku9(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSudoku9(allRequestParams);
+            return "redirect:/?config="+config;
+        } 
+
+        @RequestMapping(value="/handle/sudoku9", params="solve", method = RequestMethod.GET)
+        public String solveSudoku9(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSudoku9(allRequestParams);
+            return "redirect:/?config="+config+"&operation=solve";
+        } 
+        @RequestMapping(value="/handle/sudoku9", params="clear", method = RequestMethod.GET)
+        public String clearSudoku9(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSudoku9(allRequestParams);
+            return "redirect:/?config=";
+        } 
  
+        public String extractConfigSudoku9(Map<String, String> allRequestParams){
+            Set<String> keys = allRequestParams.keySet();
+            String[][] orderedValues = new String[9][9];
+            for (String key: keys){
+                String value = allRequestParams.get(key);
+                //The strings are expected to be in y<number>x<number> form
+                //In this case we are lucky that the number has only one digit
+                if(key.substring(0,1).equals("y") && key.substring(2,3).equals("x"))
+                {
+                    int x = Integer.parseInt(key.substring(3,4));
+                    int y = Integer.parseInt(key.substring(1,2));
+                    orderedValues[y][x] = value; 
+                }
+            }
+
+            String config = "";
+            for (int y = 0; y < 9; y++){
+                for(int x = 0; x < 9; x++){
+                    String value = orderedValues[y][x];
+                    if(value == null) value = "0";
+                    if(value.equals("")) value = "0";
+                    config += value;
+                }
+            }
+            return config;
+        }
 }

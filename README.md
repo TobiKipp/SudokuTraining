@@ -422,4 +422,48 @@ The SudokuCellThread needs to store additional information to see if the possibl
 As an example for and only partially solvable sudoku http://localhost:8080/Sudoku/?config=123------456------78&operation=solve can be used as url. It will find the 9 that is not in the configuration. The time to response is
 around 2 to 4 seconds with the current configuration.
 
+## Save config button ##
 
+The save config button will create an URL from the values in the field. Since I do not plan to use Javascript 
+for this the first thing that comes to my mind is to use a form.
+
+The form was setup to use the path /handle/sudoku9 with parameters ynxm=value format.
+One example output is:
+
+    http://localhost:8080/Sudoku/handle/sudoku9?y0x0=1&y0x1=2&y0x2=3&y0x3=&y0x4=&y0x5=&y0x6=&y0x7=&y0x8=&y1x0=4&y1x1=5&y1x2=6&y1x3=&y1x4=&y1x5=&y1x6=&y1x7=&y1x8=&y2x0=7&y2x1=8&y2x2=&y2x3=&y2x4=&y2x5=&y2x6=&y2x7=&y2x8=&y3x0=&y3x1=&y3x2=&y3x3=&y3x4=&y3x5=&y3x6=&y3x7=&y3x8=&y4x0=&y4x1=&y4x2=&y4x3=&y4x4=&y4x5=&y4x6=&y4x7=&y4x8=&y5x0=&y5x1=&y5x2=&y5x3=&y5x4=&y5x5=&y5x6=&y5x7=&y5x8=&y6x0=&y6x1=&y6x2=&y6x3=&y6x4=&y6x5=&y6x6=&y6x7=&y6x8=&y7x0=&y7x1=&y7x2=&y7x3=&y7x4=&y7x5=&y7x6=&y7x7=&y7x8=&y8x0=&y8x1=&y8x2=&y8x3=&y8x4=&y8x5=&y8x6=&y8x7=&y8x8=
+
+The method for this stores the values according to their name in an array and then turns this array to 
+a configuration stream and redirects to the index page with this configuration.
+As the parameters are more or less arbitrary, or at least generic, writing them all down does not make much sense.
+Instead all parameters are to be stored in one Map.
+
+        public String storeSudoku9(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+
+The @ResponseBody annotation helps to see what gets into the page a lot.
+
+For the Sudoku9 class the index based selection was okay for the parameter to coordinate transformation.
+When implementing the Samurai-Sudoku I will deal with the index extraction.
+
+## Other buttons ##
+
+The clear button just redirects to the start page with and empty configuration.
+The solve button does almost the same as the save button. It only adds the "&operation=save" to the redirect url.
+
+
+## A hard example ##
+
+http://localhost:8080/Sudoku/?config=050702003073480005000050400040000200027090350006000010005030000400068730700109060
+
+The link starts loads a GNOME Sudoku hard start configuration. Using solve will lead to a state, where only
+at least 2 possible values per field are left.
+
+A rule for pair exclusion might help. If two cells in a group have the same two possible values left, then
+the other fields can not have this value.
+### Manually solving for now ##
+According to this rule the field \[8\]\[1\] is 3 and
+\[8\]\[6\] is 5. This provides no further values. 
+\[3\]\[8\] is 6. 
+\[4\]\[8\] is 4. 
+\[5\]\[8\] is 7. 
+
+The timeouts are set to small. I had to press solve twice after setting the above.

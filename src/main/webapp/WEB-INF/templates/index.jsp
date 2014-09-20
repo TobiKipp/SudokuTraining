@@ -11,6 +11,7 @@
     </head>
     <body>
     <h1>Sudoku Solver</h1>
+    <form name="sudokufield" action="handle/sudoku9" method="get">
     <c:forEach begin="0" end="8" var="y">
         <c:choose>
             <c:when test="${y%3 == 2}">
@@ -38,11 +39,23 @@
             </c:choose>
              <div class="horizontal">
                 <div class="${xclass} ${yclass}">
-                    <input type="text" class="sudokucell " value="<c:out value="${field[y][x]}"/>" maxlength="1">
+                    <input type="text" class="sudokucell " value="<c:out value="${field[y][x]}"/>" maxlength="1"
+                     name="y${y}x${x}">
                 </div>
             </div>
         </c:forEach>
         </div>
     </c:forEach>
+    <input type="submit" name="store" value="store">
+    <input type="submit" name="solve" value="solve">
+    <input type="submit" name="clear" value="clear">
+    </form>
+    <p>
+        Store will redirect to a new page that can be bookmarked.
+    </p>
+    <p>
+        Solve will redirect to a new page that will take some time to load, due to solving the sudoku as 
+        far as possible with the small set of rules. Currently only the one value left in cell rule is used.
+    </p>
     </body>
 </html>
