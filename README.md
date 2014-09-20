@@ -411,3 +411,15 @@ I noted that Box Index i=8 top left cell is 6,6
 x = i%3\*3 = 2\*3 = 6
 y = i/3\*3 = 2\*3 = 6 
 
+### Timeout ###
+
+One of the issues is if the rules are not enough to solve the sudoku. One way would be to add a number
+of rounds that a thread may have without a change. As alternative all threads would have to communicate, however
+they are all running more or less independent from each other. The first one is significantly easier to implement
+and might later be used to implement the more intelligent termination.
+The SudokuCellThread needs to store additional information to see if the possible values changed.
+
+As an example for and only partially solvable sudoku http://localhost:8080/Sudoku/?config=123------456------78&operation=solve can be used as url. It will find the 9 that is not in the configuration. The time to response is
+around 2 to 4 seconds with the current configuration.
+
+

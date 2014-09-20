@@ -6,14 +6,21 @@ import java.util.ArrayList;
 
 class SudokuGroupThread extends Thread{
     private ArrayList<SudokuCell> sudokuCells;
+    private int timeoutMax;
 
-    public SudokuGroupThread(ArrayList<SudokuCell> sudokuCells){
+    public SudokuGroupThread(ArrayList<SudokuCell> sudokuCells, int timeoutMax){
         this.sudokuCells = sudokuCells;
+        this.timeoutMax = timeoutMax;
     }
     
     public void run(){
         try{
+            int timeout = this.timeoutMax;
             while (sudokuCells.size() != 0){
+                timeout -= 1;
+                if(timeout < 0){
+                    break;
+                }
                 //find the first set SudokuCell 
                 int j = -1;
                 for(int i = 0; i < this.sudokuCells.size(); i++){
@@ -23,6 +30,7 @@ class SudokuGroupThread extends Thread{
                     }
                 }
                 if (j != -1){
+                    timeout = this.timeoutMax;
                     String value = this.sudokuCells.get(j).toString();
                     //remove its value from the possibles of the others
                     for(int i = 0; i < this.sudokuCells.size(); i++){

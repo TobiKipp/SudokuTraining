@@ -101,13 +101,15 @@ public class Sudoku9{
     }
 
     public void solve(){
+        int timeoutCell = 20;
+        int timeoutGroup = 10;
         ArrayList<Thread> allThreads = new ArrayList<Thread>();
         for (int i=0; i < 81; i++){
            int[] xy = indexToXY(i);
            int x = xy[0];
            int y = xy[1];
             
-           SudokuCellThread thread = new SudokuCellThread(this.sudokuField[y][x]);
+           SudokuCellThread thread = new SudokuCellThread(this.sudokuField[y][x], timeoutCell);
            allThreads.add(thread);
         }
         //First collect all indices.
@@ -143,7 +145,7 @@ public class Sudoku9{
          
         for (SudokuCell[] sudokuCellGroup: sudokuCellGroups){
             ArrayList<SudokuCell> sudokuCellGroupList = new ArrayList<SudokuCell>(Arrays.asList(sudokuCellGroup));
-            SudokuGroupThread thread = new SudokuGroupThread(sudokuCellGroupList);
+            SudokuGroupThread thread = new SudokuGroupThread(sudokuCellGroupList, timeoutGroup);
             allThreads.add(thread);
         }
 
