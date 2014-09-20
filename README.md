@@ -322,6 +322,7 @@ I might add other variables later, but for now it only has field.
 ### An easy example ###
 
 An easy sudoku has the configuration
+
 796003052002080137010050640000000085000591000560000000049010020378060900120400768
 
 It will be fed to the solver once it is finished.
@@ -345,18 +346,29 @@ For groups it is a bit more complex with div and mod. After a quick sketch each 
 [0,1,2]x[0,1,2]. Each (0,0) has to be shifted according to the box top left cell. These are [0,3,6] x [0,3,6]
 
 Box Index i=0 top left cell is 0,0
+
 i%3 = 0
+
 i/3 = 0
+
 Box Index i=1 top left cell is 0,3
+
 i%3 = 1
+
 i/3 = 0
+
 Box Index i=8 top left cell is 6,6
+
 i%3 = 2
+
 i/3 = 2
 
 With this follows
+
 y = i/3\*2
+
 x = i%3\*2
+
 for the top left corner of the box with index i.
 
 For some reason the whole thing seems not to solve, even though tested with GNOME Sudoku and possible value hint
@@ -398,17 +410,21 @@ That was some interesting debugging by printing all indices:
     GROUP 25(6,3), (6,4), (6,5), (7,3), (7,4), (7,5), (8,3), (8,4), (8,5), 
     GROUP 26(6,6), (6,7), (6,8), (7,6), (7,7), (7,8), (8,6), (8,7), (8,8),
 
-Group 0-9 is rows
-Group 10-17 is colums
+Group 0-9 are rows.
+Group 10-17 are colums.
 Group 18 to 26 are blocks.
 
 It was one typo and one calculation (if I even calculated anything there) error. 
 The box x and y must be multiplied by 3 and not 2. 
+
 y = i/3\*3
+
 x = i%3\*3
 
 I noted that Box Index i=8 top left cell is 6,6
+
 x = i%3\*3 = 2\*3 = 6
+
 y = i/3\*3 = 2\*3 = 6 
 
 ### Timeout ###
