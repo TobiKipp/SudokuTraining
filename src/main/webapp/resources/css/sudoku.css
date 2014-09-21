@@ -8,11 +8,14 @@ html, body {
   padding:0;
   min-height: 100%; /* for firefox */
 }
-
+.sudokuField{
+    width:700px;
+    height:700px;
+}
 .horizontal{
     float:left;
     white-space:nowrap;
-    display:inline;
+    display:inline-block;
 }
 
 .vertical{
