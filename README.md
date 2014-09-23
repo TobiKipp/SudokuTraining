@@ -483,3 +483,9 @@ According to this rule the field \[8\]\[1\] is 3 and
 \[5\]\[8\] is 7. 
 
 The timeouts are set to small. I had to press solve twice after setting the above.
+
+## Code Cleanup TimeoutThread ##
+
+I copied code, which is considered bad for changes. I added a TimeoutThread class that offers an execute method
+that is one cycle in the while running. The execute method returns a boolean value, that leads to the loop stopping
+when it is false. 

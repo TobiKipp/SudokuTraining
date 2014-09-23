@@ -12,8 +12,9 @@ class SudokuFieldStatusThread extends Thread{
     
     public void run(){
         try{
-            while(true){
-                boolean done = true;
+            boolean done = false;
+            while(!done){
+                done = true;
                 for(int y = 0 ; y < 9; y++){
                     System.out.println("");
                     for(int x = 0; x < 9; x++){ 
@@ -24,10 +25,8 @@ class SudokuFieldStatusThread extends Thread{
                         }
                         System.out.print(value);
                     }
-                    
                 }
                 System.out.println();
-                if(done) break;
                 this.sleep(1000);
             }
             
