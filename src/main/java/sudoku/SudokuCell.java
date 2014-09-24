@@ -1,4 +1,6 @@
 package sudoku;
+import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 class SudokuCell{
@@ -59,5 +61,22 @@ class SudokuCell{
 
     public String toString(){
         return this.value;
+    }
+
+    public void limitPossibleValues(ArrayList<String> combination){
+        Iterator<String> possibleValuesIterator = this.possibleValues.iterator();
+        while(possibleValuesIterator.hasNext()){
+            String value = possibleValuesIterator.next();
+            if(!combination.contains(value)){
+                possibleValuesIterator.remove(); 
+            }
+        }
+    }
+
+    public void removePossibleValues(ArrayList<String> combination){
+        for(int i=0; i < combination.size(); i++){
+            String value = combination.get(i);
+            this.removePossibleValue(value);
+        }
     }
 }

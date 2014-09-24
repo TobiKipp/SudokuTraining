@@ -8,6 +8,7 @@ class SudokuFieldStatusThread extends Thread{
 
     public SudokuFieldStatusThread(SudokuCell[][] field){
         this.field = field;
+        this.setDaemon(true);
     }
     
     public void run(){

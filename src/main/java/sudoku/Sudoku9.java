@@ -150,8 +150,9 @@ public class Sudoku9{
         }
 
         //StatusThread for debugging in test mode. Shows up the so far solved field when running mvn package.
+        //Running as daemon
         //Thread statusThread = new SudokuFieldStatusThread(this.sudokuField);
-        //allThreads.add(statusThread);
+        //statusThread.start();
 
         //Start all threads
         for (Thread thread: allThreads.toArray(new Thread[allThreads.size()])){

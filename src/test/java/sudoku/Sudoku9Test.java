@@ -56,6 +56,15 @@ public class Sudoku9Test{
         assertEquals(solution, sudoku9.toConfig());
     }
 
+    @Test
+    public void testSolveHard(){
+        String config = "050702003073480005000050400040000200027090350006000010005030000400068730700109060";
+        Sudoku9 sudoku9 = new Sudoku9(config, "solve");
+        String solution = "954712683173486925268953471341875296827691354596324817685237149419568732732149568";
+        assertEquals(solution, sudoku9.toConfig());
+    }
+    
+
     @Test 
     public void testLoadConfig(){
         Sudoku9 sudoku9 = new Sudoku9();

@@ -489,3 +489,89 @@ The timeouts are set to small. I had to press solve twice after setting the abov
 I copied code, which is considered bad for changes. I added a TimeoutThread class that offers an execute method
 that is one cycle in the while running. The execute method returns a boolean value, that leads to the loop stopping
 when it is false. 
+
+## Adding solver rules ##
+
+### Collecting Ideas unstructured ###
+
+As mentioned in the Manually solving for now section there is a rule to excluded some possible values.
+There are two pairs with the same two values left in the same group then the other cells can not have
+these values. This would be the simplest case of it. 
+There might be cases where from the simple rules the possible values of one cell are 1, 2, 3 and the other
+cell has 1, 2, while other cells do not contain the possible values 1 or 2. In that case these two must be 1 and 2.
+This might lead to another rule working. When inside a group one possible value only occurs once, then it must be
+that value at that cell, if the value is not already one of those that are set. Here the parallel processing must
+be done carefully. 
+
+### Creating the rules ###
+
+The following rules will only fire, if the simplest rule did not work for the group in the given cycle. 
+Create a statistic about the possible values and store which values are already used as set in the group.
+
+1. If for a not set value it only occurs once, then it must be the value. 
+2. (generic for n) There are n unset values. Find exactly n cells where the possible values contain at least one 
+   of these unset values.
+   If such a set of cells can be found, then the possible values of the found n cells are changed to only 
+   contain values of these n unset values. 
+   The other cells have the n unset values removed from the possible values.
+   TODO: Is such a kind of distribution possible [[1,2],[1,2],[2],...]? One may find 3 cells with values 
+   from [1, 2, 3] but there is no possible solution. I can not find an example on the fly, so I will 
+   have to test if there is any failure in the solution of the fed sudokus. 
+
+Example for rule 2 with n=2. 
+
+    The possible values  [ [1, 2, 3], [1, 2, 4], [4, 5, 6, 7], [3, 5, 6, 7], [3, 4, 5, 7], ..] 
+    count 2: 1, 2, 6
+    count 3: 3, 4, 5   
+    For n=2 there are pairs [ [2, 6], [1, 6], [1, 2] ]
+    [2, 6]: Cells 0, 1, 2, 3 are 4 cells, which is too much.
+    [1, 6]: Cells 0, 2, 3 are 3 cells, which is too much.
+    [1, 2]: Only in cell 0 and cell 1. it is found. 
+    The possible values are changed to [ [1, 2], [1, 2], [4, 5, 6, 7], [3, 5, 6, 7], [3, 4, 5, 7], ..] 
+    Two values could be eliminated this way and another group may now find a solution with a simpler rule.
+
+After thinking about an example I noticed that rule 1 is the special case of rule 2 for n = 1.
+
+### Implementing the rule ###
+
+I split up the code into more functions to be able to test them better.
+After testing all so far and removing a typo, everything is working as it should. To implement the rule in
+a generic way, the set of values has to be generated.
+
+Lets assume there is the set [1, 2, 3, 4] and all 3 element combinations should be generated from it.
+When writing it as a mask,  with 1 being use and 0 not use, it would be::
+
+    1110
+    1101
+    1011
+    0111
+
+This can be generated using a tree or something similar. To work around the dynamic number of loops
+a recursive algorithm is used.
+
+A first try to formulate a subset generator:
+    
+    n is the number of elements to select, combination is the so far generated combination and
+    the set contains the values to choose from.
+    if n is 1
+        for each element in the set add it to the combination
+        store the combination in a list.
+    else
+        Make a subset with the last n-1 elements remove named firstElements 
+        For each element in firstElements
+            Add the element as part of the combination.
+            Call the method for n-1 with the full set without the chosen element and the so far generated 
+            combination.
+
+
+The test for it has shown that there was one thing that lead to duplicate (other ordered) combinations.
+To avoid duplicate combinations the already used values have to be excluded. This is done by copying the
+ArrayList before the loop instead of each time inside the loop.
+
+So now that all combinations are available for each of these check if there are exactly n SudokuCells that 
+have at least of one of the values.
+
+A matching cluster of n SudokuCells is found. For all SudokuCells in the group it is check if they are in
+the cluster or not. Those in the cluster have their values limited to the values the cluster covers.
+For those not in the cluster these values are removed from the possible values.
+

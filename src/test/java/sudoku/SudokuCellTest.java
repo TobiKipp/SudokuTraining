@@ -5,6 +5,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
 import sudoku.SudokuCell;
 import java.util.Arrays;
+import java.util.ArrayList;
 
 
 public class SudokuCellTest{
@@ -25,7 +26,7 @@ public class SudokuCellTest{
     }
 
     @Test
-    public void testRemovePossibleValues(){
+    public void testRemovePossibleValue(){
         String[] possibleValues = new String[]{"1", "2", "3"};
         SudokuCell sudokuCell = new SudokuCell(possibleValues);
         //The list has the correct size.
@@ -54,5 +55,40 @@ public class SudokuCellTest{
         sudokuCell.update();
         assertEquals("3", sudokuCell.toString());
         assertEquals(true, sudokuCell.isSet());
+    }
+
+    @Test
+    public void testToString(){
+        String[] possibleValues = new String[]{"1", "2", "3"};
+        SudokuCell sudokuCell = new SudokuCell(possibleValues);
+        assertEquals("", sudokuCell.toString());   
+    }
+
+    @Test
+    public void testLimitPossibleValues(){
+        String[] possibleValues = new String[]{"1", "2", "3"};
+        SudokuCell sudokuCell = new SudokuCell(possibleValues);
+        ArrayList<String> combination = new ArrayList();
+        combination.add("4");
+        combination.add("1");
+        sudokuCell.limitPossibleValues(combination);
+        assertEquals(1, sudokuCell.getPossibleValues().length);
+        sudokuCell.update();
+        assertEquals("1", sudokuCell.toString());
+
+    }
+
+    @Test
+    public void testRemovePossibleValues(){
+        String[] possibleValues = new String[]{"1", "2", "3"};
+        SudokuCell sudokuCell = new SudokuCell(possibleValues);
+        ArrayList<String> combination = new ArrayList();
+        combination.add("2");
+        combination.add("3");
+        combination.add("4");
+        sudokuCell.removePossibleValues(combination);
+        assertEquals(1, sudokuCell.getPossibleValues().length);
+        sudokuCell.update();
+        assertEquals("1", sudokuCell.toString());
     }
 }
