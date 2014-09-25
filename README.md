@@ -575,3 +575,28 @@ A matching cluster of n SudokuCells is found. For all SudokuCells in the group i
 the cluster or not. Those in the cluster have their values limited to the values the cluster covers.
 For those not in the cluster these values are removed from the possible values.
 
+
+## Adding the Samurai Sudoku ##
+
+The main functionality for the 9x9 Sudoku including the solver is finished. To make use of the already
+existent code a new page shall be added that displays, stores and solves a Samurai Sudoku. The simplest
+way of thinking what it is, is having 5 Sudoku fields in an x shape, where the center Sudoku shares the 
+top left, top right, bottom left and bottom right block group with one of the other Sudokus. 
+
+It will require a bit more work with the layout, due to spaces in between. The configuration will be almost
+5 times as long as for the 9x9 field. The configuration parameter reduces the 2 dimensions to 1 by going from
+left to right and top to bottom. 
+
+Lets start slow. As first step we create a new JSP and just copy the old code to modify it later. The 
+path /SamuraiSudoku/ will then reference to it.
+A new rest service. The template can be reused to consume the restful service. But how the field values
+are to be interpreted has to be thought about when it is time.
+
+To access the restful service that is at /rest/samuraisudoku the url had to remove the /SamuraiSudoku part, which
+is done by using replace. 
+
+At this moment the view is just a copy of Sudoku9, which runs at the root of the app. Next the functionality of
+the buttons is added (copied). The SamuraiSudoku.jsp had its action changed to be absolute in path, so 
+"/Sudoku/" was added in front of it, to ensure the correct address will be called.
+
+With this it is a copy of the Sudoku9, but with all addresses already changed to SamuraiSudoku.

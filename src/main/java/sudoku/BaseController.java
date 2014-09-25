@@ -122,4 +122,62 @@ public class BaseController {
             }
             return config;
         }
+
+        @RequestMapping(value="/SamuraiSudoku", method = RequestMethod.GET)
+        public String samuraiSudoku(ModelMap model, HttpServletRequest request,
+                @RequestParam(value = "config", defaultValue = "0" ) String config,
+                @RequestParam(value = "operation", defaultValue = "none") String operation){
+            RestTemplate restTemplate = new RestTemplate();
+            String selfurl = request.getRequestURL().toString();
+            String baseurl = selfurl.replace("/Sudoku/SamuraiSudoku", "/Sudoku/");
+            String sudokuRestUrl = baseurl + "rest/samuraisudoku?config=" + config + "&operation=" + operation;
+            SudokuRestTemplate sudokuRT = restTemplate.getForObject(sudokuRestUrl, SudokuRestTemplate.class);
+            String[][] field =  sudokuRT.getField();
+            model.addAttribute("field", field);
+            return "SamuraiSudoku";
+        }
+
+        @RequestMapping(value="/handle/samuraisudoku", params="store", method = RequestMethod.GET)
+        public String storeSamuraiSudoku(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSamuraiSudoku(allRequestParams);
+            return "redirect:/SamuraiSudoku?config="+config;
+        } 
+
+        @RequestMapping(value="/handle/samuraisudoku", params="solve", method = RequestMethod.GET)
+        public String solveSamuraiSudoku(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSamuraiSudoku(allRequestParams);
+            return "redirect:/SamuraiSudoku?config="+config+"&operation=solve";
+        } 
+        @RequestMapping(value="/handle/samuraisudoku", params="clear", method = RequestMethod.GET)
+        public String clearSamuraiSudoku(@RequestParam Map<String,String> allRequestParams, ModelMap model){
+            String config = extractConfigSamuraiSudoku(allRequestParams);
+            return "redirect:/SamuraiSudoku?config=";
+        } 
+
+        public String extractConfigSamuraiSudoku(Map<String, String> allRequestParams){
+            Set<String> keys = allRequestParams.keySet();
+            String[][] orderedValues = new String[9][9];
+            for (String key: keys){
+                String value = allRequestParams.get(key);
+                //The strings are expected to be in y<number>x<number> form
+                //In this case we are lucky that the number has only one digit
+                if(key.substring(0,1).equals("y") && key.substring(2,3).equals("x"))
+                {
+                    int x = Integer.parseInt(key.substring(3,4));
+                    int y = Integer.parseInt(key.substring(1,2));
+                    orderedValues[y][x] = value; 
+                }
+            }
+
+            String config = "";
+            for (int y = 0; y < 9; y++){
+                for(int x = 0; x < 9; x++){
+                    String value = orderedValues[y][x];
+                    if(value == null) value = "0";
+                    if(value.equals("")) value = "0";
+                    config += value;
+                }
+            }
+            return config;
+        }
 }
