@@ -578,6 +578,7 @@ For those not in the cluster these values are removed from the possible values.
 
 ## Adding the Samurai Sudoku ##
 
+### Preparation ###
 The main functionality for the 9x9 Sudoku including the solver is finished. To make use of the already
 existent code a new page shall be added that displays, stores and solves a Samurai Sudoku. The simplest
 way of thinking what it is, is having 5 Sudoku fields in an x shape, where the center Sudoku shares the 
@@ -600,3 +601,40 @@ the buttons is added (copied). The SamuraiSudoku.jsp had its action changed to b
 "/Sudoku/" was added in front of it, to ensure the correct address will be called.
 
 With this it is a copy of the Sudoku9, but with all addresses already changed to SamuraiSudoku.
+
+### The field ###
+
+I will keep the left to right top to bottom projection. The question now is if invisible boxes should
+be added or if the having the same x value does not mean that the elements are in the same column. 
+Due to the generalization of rows, columns and blocks to groups it the x and y coordinates only matter 
+considering the generic group creation. 
+
+After some thought I would like the generation of groups easier, which favors the invisible cells.
+This means there would be a 21x21 field with four subfields, as group of cells, being invisible.
+The invisible cells will use a div instead of an input element. 
+
+The invisible boxes in [left, top, right, bottom] notation are:
+
+[9,0,11,5], [0, 9, 5, 11], [15, 9, 20, 11], [9, 15, 11, 20]
+
+Each cells will have a y and an x component in its name for the generic group creation.
+
+I could get an approximately correct field, however many borders are missing and in different browsers
+it looks different, considering the spacing. So another approach is needed. Using column-count does not 
+really work either. Perhaps this time a table 
+is more suited.
+
+So lets try to solve it by starting with a few code as possible. The first thing is only the cells arranged
+as an X. The block separating border will be left out for now. 
+With just this it looks fine in Windows Firefox, Chrome and Opera and in Linux with Firefox, Midori and Chromium.
+On the outer path around the Samurai Sudoku there is only half the border width, due to no other cell being
+next to it. To fix this the position at 0 elements get a top or left class and the position 20 elements get a 
+right or bottom class.
+
+It still looks good aligned in every browser mentioned earlier. Now the cut out cells from the 21x21 field
+need to get their border as well.
+One example for this for each cell between and including x=9 and x=11 with y=6 need to have a top border,
+that does not alter the layout. So the cell might have to be moved up by the border width.
+
+For the separators of groups I am at the limit of what a single border can do, so how about adding a 2px height
+or width element in the desired color. 
