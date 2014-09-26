@@ -6,105 +6,82 @@
 <!DOCTYPE HTML>
 <html>
     <head>
-        <link rel="stylesheet" href="<c:url value="/resources/css/samuraisudoku.css"/>">
+        <link rel="stylesheet" href="<c:url value="/resources/css/${samuraisudokucss}"/>">
         <title>Samurai Sudoku Solver - Spring JSP JSTL Training Project</Title>
     </head>
     <body>
     <h1>Samurai Sudoku Solver</h1>
     <form name="sudokufield" action="/Sudoku/handle/samuraisudoku" method="get">
         <div class="sudokuField">
-            <c:forEach begin="0" end="20" var="y">
+            <c:forEach begin="0" end="21" var="y">
                 <div class="vertical">
-                <%-- Outer border --%>  
                 <c:choose>
-                    <c:when test="${y == 0}">
-                        <c:set var="yclass" value="cell-istop"/>
-                    </c:when>
-                    <c:when test="${y == 20}">
-                        <c:set var="yclass" value="cell-isbottom"/>
+                    <c:when test="${y%3 == 0}">
+                    <div class="vertical">
+                        <c:forEach begin="0" end="21" var="x">
+                            <c:choose>
+                                <c:when test="${
+                                (x >= 9 && x <= 11 && y <= 5)||
+                                (x >= 9 && x <= 11 && y >= 16)
+                                }">
+                                    <c:set var="hiddenclass" value="hidden"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <c:set var="hiddenclass" value=""/>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:choose>
+                                <c:when test="${ x%3==0 }">
+                                <div class="horizontal separatorYX">
+                                </div>
+                                </c:when>
+                                <c:otherwise>
+                                </c:otherwise>
+                            </c:choose>
+                            <c:if test="${x != 21}">
+                            <div class="horizontal separatorY ${hiddenclass}"></div>
+                            </c:if>
+                        </c:forEach>
+                    </div>
                     </c:when>
                     <c:otherwise>
-                        <c:set var="yclass" value=""/>
                     </c:otherwise>
                 </c:choose>
-                  <c:forEach begin="0" end="20" var="x">
+                <div class="horizontal">
+                <c:forEach begin="0" end="21" var="x">
+                  <c:set var="hiddenx" value=""/>
+                  <c:if test="${y >= 9 && y <= 11 && (x <= 5 ||  x >= 16) }">
+                      <c:set var="hiddenx" value="hidden"/>
+                  </c:if>
                   <c:choose>
-                      <c:when test="${x == 0}">
-                          <c:set var="xclass" value="cell-isleft"/>
-                      </c:when>
-                      <c:when test="${x == 20}">
-                          <c:set var="xclass" value="cell-isright"/>
+                      <c:when test="${ x%3==0 && y != 21 }">
+                      <div class="horizontal separatorX ${hiddenx}">
+                      </div>
                       </c:when>
                       <c:otherwise>
-                          <c:set var="xclass" value=""/>
                       </c:otherwise>
                   </c:choose>
-                  <%-- Cut out border --%>  
+                  <c:if test="${x != 21 && y != 21}">
                   <c:choose>
-                      <c:when test="${(x >= 9 && x <= 11 && y == 6) ||
-                                      (x >=0 && x <= 5 && y == 12) ||
-                                      (x >=15 && x <= 20 && y == 12)
+                      <c:when test="${
+                      (x >= 9 && x <= 11 && y >= 0 && y <= 5)||
+                      (x >= 0 && x <= 5 && y >= 9 && y <= 11)||
+                      (x >= 15 && x <= 20 && y >= 9 && y <= 11)||
+                      (x >= 9 && x <= 11 && y >= 15 && y <= 20)
                       }">
-                          <c:set var="cutclass" value="cell-cuttop"/>
-                      </c:when>
-                      <c:when test="${(x >= 9 && x <= 11 && y == 14)||
-                                      (x >=0 && x <= 5 && y == 8) ||
-                                      (x >=15 && x <= 20 && y == 8)
-                      }">
-                          <c:set var="cutclass" value="cell-cutbottom"/>
-                      </c:when>
-                      <c:when test="${(y >= 9 && y <= 11 && x == 6)||
-                                      (y >=0 && y <= 5 && x == 12) ||
-                                      (y >=15 && y <= 20 && x == 12)
-                      
-                      }">
-                          <c:set var="cutclass" value="cell-cutleft"/>
-                      </c:when>
-                      <c:when test="${(y >= 9 && y <= 11 && x == 14)||
-                                      (y >=0 && y <= 5 && x == 8) ||
-                                      (y >=15 && y <= 20 && x == 8)
-                      }">
-                          <c:set var="cutclass" value="cell-cutright"/>
+                          <div class="horizontal hidden">
+                               <input type="text" class="sudokucell hidden" maxlength="1" name="y${y}x${x}">
+                          </div>
                       </c:when>
                       <c:otherwise>
-                          <c:set var="cutclass" value=""/>
+                          <div class="horizontal">
+                              <input type="text" class="sudokucell" value="<c:out value="${field[y][x]}"/>"
+                                     maxlength="1" name="y${y}x${x}">
+                          </div>
                       </c:otherwise>
                   </c:choose>
-                  <%-- In field separators
-                  <c:choose>
-                      <c:when test="${ x%3==2 }">
-                          <c:set var="separatorclass" value="cell-separateright"/>
-                      </c:when>
-                      <c:when test="${ x%3==0 }">
-                          <c:set var="separatorclass" value="cell-separatelet"/>
-                      </c:when>
-                      <c:otherwise>
-                          <c:set var="separatorclass" value=""/>
-                      </c:otherwise>
-                  </c:choose>
-                  --%>
-
-                    <div class="horizontal">
-                    <c:choose>
-                        <c:when test="${
-                        (x >= 9 && x <= 11 && y >= 0 && y <= 5)||
-                        (x >= 0 && x <= 5 && y >= 9 && y <= 11)||
-                        (x >= 15 && x <= 20 && y >= 9 && y <= 11)||
-                        (x >= 9 && x <= 11 && y >= 15 && y <= 20)
-                        }">
-                        <div class="${xclass} ${yclass} hidden ${separatorclass}">
-                        <input type="text" class="sudokucell hidden" maxlength="1" name="y${y}x${x}">
-                        </div>
-                        </c:when>
-                        <c:otherwise>
-                            <div class="${xclass} ${yclass} ${cutclass} ${separatorclass}">
-                                <input type="text" class="sudokucell" value="<c:out value="${field[y][x]}"/>"
-                                       maxlength="1" name="y${y}x${x}">
-                            </div>
-                        </c:otherwise>
-                    </c:choose>
-                    </div>
-                  </c:forEach>
+                  </c:if>
+                </c:forEach>
                 </div>
             </c:forEach>
         <div>

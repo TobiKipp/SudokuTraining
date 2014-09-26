@@ -1,0 +1,51 @@
+html, body {
+  height: 100%;
+  width: 100%;
+  margin:0;
+  padding:0;
+  min-height: 100%; /* for firefox */
+}
+.sudokuField{
+    width:1000px;
+    height:1000px;
+}
+.horizontal{
+    float:left;
+    white-space:nowrap;
+    display:inline-block;
+}
+
+.vertical{
+    float:left;
+    width:100%;
+}
+
+.sudokucell{
+    width:30px;
+    height:30px;
+    text-align:center;
+    font-size:15px;
+    border: 1px solid red;
+}
+
+.separatorX{
+    height: 34px;
+    width: 4px;
+    background: green;
+}
+.separatorY{
+    height: 4px;
+    width: 32px;
+    background: magenta;
+}
+
+.separatorYX{
+    height: 4px;
+    width: 4px;
+    background:yellow;
+} 
+
+.hidden{
+    visibility:hidden;
+    border-color:transparent;
+}

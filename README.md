@@ -637,4 +637,13 @@ One example for this for each cell between and including x=9 and x=11 with y=6 n
 that does not alter the layout. So the cell might have to be moved up by the border width.
 
 For the separators of groups I am at the limit of what a single border can do, so how about adding a 2px height
-or width element in the desired color. 
+or width element in the desired color.  
+
+It is great that browsers handle things so differently. I tried using background to draw the separation lines
+and when it looked fine in firefox and midori I tried opera and chromium and the lines were too long. So I will
+have to use another solution. I have already seen things like using images. I decided to use two css versions
+as it was the fastest to do. 
+
+After massively abusing tricks, like using 22 instead of 21 fields and then hide all separators I got a 
+cross browser equal looking representation. There are some 1 pixel errors if the zoom method of the browser 
+is used, but that is not my problem.

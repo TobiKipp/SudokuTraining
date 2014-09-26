@@ -132,8 +132,14 @@ public class BaseController {
             String baseurl = selfurl.replace("/Sudoku/SamuraiSudoku", "/Sudoku/");
             String sudokuRestUrl = baseurl + "rest/samuraisudoku?config=" + config + "&operation=" + operation;
             SudokuRestTemplate sudokuRT = restTemplate.getForObject(sudokuRestUrl, SudokuRestTemplate.class);
+            
+            String css = "samuraisudoku.css";
+            String userAgent = request.getHeader("user-agent");
+            if(userAgent.contains("Chrome")) css = "samuraisudoku-chrome.css";
+
             String[][] field =  sudokuRT.getField();
             model.addAttribute("field", field);
+            model.addAttribute("samuraisudokucss", css);
             return "SamuraiSudoku";
         }
 
