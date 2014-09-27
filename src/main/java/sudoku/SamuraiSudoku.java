@@ -10,11 +10,35 @@ import sudoku.SudokuFieldStatusThread;
 import java.lang.Thread;
 import java.util.ArrayList;
 import java.lang.InterruptedException;
-
+import java.util.HashMap;
 
 public class SamuraiSudoku{
 
-    private SudokuCell[][] sudokuField;
+    private HashMap<Integer, HashMap<Integer, SudokuCell> > sudokuField = new HashMap<Integer, HashMap<Integer, SudokuCell> >();
+    private Integer[][] skipIndex = new Integer[][]{
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {},
+            {},
+            {},
+            {0, 1, 2, 3 ,4, 5, 15, 16, 17, 18, 19, 20},
+            {0, 1, 2, 3 ,4, 5, 15, 16, 17, 18, 19, 20},
+            {0, 1, 2, 3 ,4, 5, 15, 16, 17, 18, 19, 20},
+            {},
+            {},
+            {},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11},
+            {9, 10, 11}
+            };
+    private int[] rowLength;
     private static final String[] possibleValues = new String[]{"1", "2", "3", "4", "5", "6", "7", "8", "9"};
     
     public SamuraiSudoku(){
@@ -36,7 +60,11 @@ public class SamuraiSudoku{
     }
 
     public void init(String config){
-        this.sudokuField = new SudokuCell[9][9];
+        this.rowLength = new int[21];
+        for(int y = 0; y < 21; y++){
+            this.rowLength[y] = 21 - this.skipIndex[y].length;
+            this.sudokuField.put(y, new HashMap<Integer, SudokuCell>());
+        }
         this.loadConfig(config);
 
     
@@ -47,7 +75,7 @@ public class SamuraiSudoku{
      */
     public void loadConfig(String config){
        int configlength = config.length();
-       for (int i = 0; i < 81; i++){
+       for (int i = 0; i < 369; i++){
            int[] xy = indexToXY(i);
            int x = xy[0];
            int y = xy[1];
@@ -62,35 +90,59 @@ public class SamuraiSudoku{
            if (!cellValue.equals("")){
                sudokuCell.setValue(cellValue);
            }
-           this.sudokuField[y][x] = sudokuCell;
+          
+           this.sudokuField.get(y).put(x, sudokuCell);
        }
     }
 
-
-    protected int[] indexToXY(int i){
-        int x = i%9;
-        int y = i/9;
+    /*
+     * Turns an index to the array coordinates.
+     */
+    public int[] indexToXY(int i){
+        if (i >= 369 ) return new int[]{-1, -1};
+        int rest = i;
+        int y = 0;
+        while(rest >= this.rowLength[y]){
+            rest -= this.rowLength[y];
+            y++;
+        }
+        int x = -1; 
+        while (rest >= 0){
+            rest--;
+            x++;
+            while (Arrays.asList(skipIndex[y]).contains(x)){
+                x++;        
+            }
+        } 
         return new int[] {x, y};
     }
     
     public String[][] getField(){
-        String[][] field = new String[9][9];
-        for (int y = 0; y < 9; y++){
-            for(int x = 0; x < 9; x++){
-                field[y][x] = this.sudokuField[y][x].toString();
-            }}
+        String[][] field = new String[21][21];
+        for (int y = 0; y < 21; y++){
+            for(int x = 0; x < 21; x++){
+                if(this.sudokuField.get(y).containsKey(x)){
+                    field[y][x] = this.sudokuField.get(y).get(x).toString();
+                }
+                else{
+                    field[y][x] = "_";
+                }
+            }
+        }
         return field;
     }
 
     public String toConfig(){
         String config = "";
-        for (int y = 0; y < 9; y++){
-            for(int x = 0; x < 9; x++){
-                String cellValue = this.sudokuField[y][x].toString();
-                if (cellValue == ""){
-                    cellValue = "0";
+        for (int y = 0; y < 21; y++){
+            for(int x = 0; x < 21; x++){
+                if(this.sudokuField.get(y).containsKey(x)){
+                    String cellValue = this.sudokuField.get(y).get(x).toString();
+                    if (cellValue == ""){
+                        cellValue = "0";
+                    }
+                    config += cellValue;
                 }
-                config += cellValue;
             }
         }
         return config;
@@ -105,7 +157,7 @@ public class SamuraiSudoku{
            int x = xy[0];
            int y = xy[1];
             
-           SudokuCellThread thread = new SudokuCellThread(this.sudokuField[y][x], timeoutCell);
+           SudokuCellThread thread = new SudokuCellThread(this.sudokuField.get(y).get(x), timeoutCell);
            allThreads.add(thread);
         }
         //First collect all indices.
@@ -135,7 +187,7 @@ public class SamuraiSudoku{
                 int[] address = sudokuGroups[group][element];
                 int y = address[0];
                 int x = address[1];
-                sudokuCellGroups[group][element] = this.sudokuField[y][x];
+                sudokuCellGroups[group][element] = this.sudokuField.get(y).get(x);
             }
         }
          
