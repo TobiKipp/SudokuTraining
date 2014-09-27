@@ -152,7 +152,7 @@ public class SamuraiSudoku{
         int timeoutCell = 40;
         int timeoutGroup = 20;
         ArrayList<Thread> allThreads = new ArrayList<Thread>();
-        for (int i=0; i < 81; i++){
+        for (int i=0; i < 369; i++){
            int[] xy = indexToXY(i);
            int x = xy[0];
            int y = xy[1];
@@ -161,28 +161,51 @@ public class SamuraiSudoku{
            allThreads.add(thread);
         }
         //First collect all indices.
-        //9 blocks 9 rows 9 colums are 27 groups
-        //each group has 9 elements
-        //each element has 2 components x and y to access it. 
-        int[][][] sudokuGroups = new int[27][9][2];
-        for(int i = 0; i < 9; i++){
-            int blockTop = i/3*3;
-            int blockLeft = i%3*3;
+        //41 blocks
+        //45 rows
+        //45 columns
+        int[][][] sudokuGroups = new int[131][9][2];
+        int[] offsetsX = new int[]{0, 12, 6,  0, 12};
+        int[] offsetsY = new int[]{0,  0, 6, 12, 12};
+        //rows and colums and the blocks for the 4 outer sudoku9x9
+        int blockOffset = 0;
+        for(int sudoku9x9 = 0; sudoku9x9 < 5; sudoku9x9++){
+            int offsetX = offsetsX[sudoku9x9];        
+            int offsetY = offsetsY[sudoku9x9];        
+            for(int i = 0; i < 9; i++){
+                int blockTop = i/3*3;
+                int blockLeft = i%3*3;
+                for(int element=0; element < 9; element++){
+                    //rows
+                    sudokuGroups[i+sudoku9x9*18][element] = new int[]{offsetY + i, offsetX + element};
+                    //columns
+                    sudokuGroups[i+9+sudoku9x9*18][element] = new int[]{offsetY + element, offsetX + i};
+                    //rows and colums take indices 0 to 89
+                    //blocks starting at 90
+                    if(sudoku9x9 != 2){
+                        int y = element/3 + offsetY + blockTop;
+                        int x = element%3 + offsetX + blockLeft;
+                        sudokuGroups[i + blockOffset * 9 + 90][element] = new int[]{y, x};
+                    }
+                }
+            }
+            if(sudoku9x9 != 2) blockOffset++;
+        }
+        //As check for the index to be at the correct poisition. The last used blockOffset is 3 and i is 9.
+        // The last used index is: 8 + 3*9 + 90 = 125. This leaves 126 to 130 for the last 5 groups
+        int[] boxStartX = new int[]{9, 6, 9 , 12,  9};
+        int[] boxStartY = new int[]{6, 9, 9 ,  9, 12};
+        for(int box = 0; box < 5; box++){
             for(int element=0; element < 9; element++){
-                //rows
-                sudokuGroups[i][element] = new int[]{i, element};
-                //columns
-                sudokuGroups[i+9][element] = new int[]{element, i};
-                
-                //blocks
-                int y = element/3;
-                int x = element%3;
-                sudokuGroups[i+18][element] = new int[]{blockTop+y, blockLeft+x};
+                int y = element/3 + boxStartY[box];
+                int x = element%3 + boxStartX[box];
+                sudokuGroups[126+box][element] = new int[]{y, x};
             }
         }
+
         //Then get the groups of SudokuCells according to the indices
-        SudokuCell[][] sudokuCellGroups = new SudokuCell[27][9];
-        for (int group=0; group < 27; group++){
+        SudokuCell[][] sudokuCellGroups = new SudokuCell[131][9];
+        for (int group=0; group < 131; group++){
             for(int element = 0; element < 9; element++){
                 int[] address = sudokuGroups[group][element];
                 int y = address[0];
@@ -214,7 +237,5 @@ public class SamuraiSudoku{
             catch (InterruptedException e){
             }
         }
-
-         
     }
 }

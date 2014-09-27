@@ -710,4 +710,16 @@ confirmed the correct display of these.
 
 ### Adjusting the solver ###
 
+There are now obviously much more groups and cells. For the outer 4 9x9 Sudoku I can use the generic 
+box groups and for the 5 9x9 Sudoku I can use the rows and colums from Sudoku9 by adding a offset.
+This leaves the 5 boxes in the middle not covered by the 4 outer 9x9 Sudoku. (I don't want the 4 boxes to 
+have dobule the threads running)
+
+I seem to have done something wrong, but to get things running first the Controller will create the configuration
+by filtering out the cut out addresses.
+
+At least store and clear buttons are working again.
+
+After fixing some issues with the group indices generation I put in an example, which now is in the test, 
+and hit solve and it worked just fine.
 

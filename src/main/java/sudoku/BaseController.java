@@ -162,26 +162,33 @@ public class BaseController {
 
         public String extractConfigSamuraiSudoku(Map<String, String> allRequestParams){
             Set<String> keys = allRequestParams.keySet();
-            String[][] orderedValues = new String[9][9];
+            String[][] orderedValues = new String[21][21];
             for (String key: keys){
                 String value = allRequestParams.get(key);
                 //The strings are expected to be in y<number>x<number> form
-                //In this case we are lucky that the number has only one digit
-                if(key.substring(0,1).equals("y") && key.substring(2,3).equals("x"))
-                {
-                    int x = Integer.parseInt(key.substring(3,4));
-                    int y = Integer.parseInt(key.substring(1,2));
+                //It can be either one or two digit numbers.
+                //It is assumed that no other parameter starts with y.
+                if(key.substring(0,1).equals("y")){
+                    String[] splitKeyX = key.split("x");
+                    int x = Integer.parseInt(splitKeyX[1]);
+                    int y = Integer.parseInt(splitKeyX[0].split("y")[1]);
+                    if(value.equals("")) value = "0";
                     orderedValues[y][x] = value; 
                 }
             }
 
             String config = "";
-            for (int y = 0; y < 9; y++){
-                for(int x = 0; x < 9; x++){
-                    String value = orderedValues[y][x];
-                    if(value == null) value = "0";
-                    if(value.equals("")) value = "0";
-                    config += value;
+            for (int y = 0; y < 21; y++){
+                for(int x = 0; x < 21; x++){
+                   if(!(
+                     (x >= 9 && x <= 11 && (y <= 5 || y >=15))||
+                     (y >= 9 && y <= 11 && (x <= 5 || x >=15))
+                     )){ 
+                        String value = orderedValues[y][x];
+                        if(!value.equals("")){
+                            config += value;
+                        }
+                    }
                 }
             }
             return config;
